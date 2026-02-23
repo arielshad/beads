@@ -213,7 +213,14 @@ const (
 	StatusIconBlocked    = "●" // needs attention (filled circle)
 	StatusIconClosed     = "✓" // completed (checkmark)
 	StatusIconDeferred   = "❄" // scheduled for later (snowflake)
-	StatusIconPinned     = "📌" // elevated priority
+	StatusIconPinned     = "◆" // persistent bead that stays open (diamond)
+)
+
+// Context marker icons (non-status UI indicators)
+const (
+	// PinnedMarkerIcon marks issues pinned as persistent context (Issue.Pinned=true).
+	// Keep this distinct from StatusIconPinned (Issue.Status="pinned").
+	PinnedMarkerIcon = "★"
 )
 
 // Priority icon - small filled circle, colored by priority level

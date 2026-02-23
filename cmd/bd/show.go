@@ -26,6 +26,7 @@ var showCmd = &cobra.Command{
 		idFlags, _ := cmd.Flags().GetStringArray("id")
 		localTime, _ := cmd.Flags().GetBool("local-time")
 		watchMode, _ := cmd.Flags().GetBool("watch")
+		noPager, _ := cmd.Flags().GetBool("no-pager")
 		ctx := rootCtx
 
 		// Helper to format timestamp based on --local-time flag
@@ -96,6 +97,7 @@ var showCmd = &cobra.Command{
 		// Direct mode - use routed resolution for cross-repo lookups
 		allDetails := []interface{}{}
 		foundCount := 0
+		var out strings.Builder
 		for idx, id := range args {
 			// Resolve and get issue with routing (e.g., gt-xyz routes to gastown)
 			result, err := resolveAndGetIssueWithRouting(ctx, store, id)
@@ -150,24 +152,29 @@ var showCmd = &cobra.Command{
 				continue
 			}
 			if idx > 0 {
-				fmt.Println("\n" + ui.RenderMuted(strings.Repeat("─", 60)))
-				fmt.Printf("\n%s\n", formatIssueHeader(issue))
+				out.WriteString("\n")
+				out.WriteString(ui.RenderMuted(strings.Repeat("─", 60)))
+				out.WriteString("\n\n")
+				out.WriteString(formatIssueHeader(issue))
+				out.WriteString("\n")
 			} else {
-				fmt.Printf("%s\n", formatIssueHeader(issue))
+				out.WriteString(formatIssueHeader(issue))
+				out.WriteString("\n")
 			}
 
 			// Metadata: Owner · Type | Created · Updated
-			fmt.Println(formatIssueMetadata(issue))
+			out.WriteString(formatIssueMetadata(issue))
+			out.WriteString("\n")
 
 			// Compaction info (if applicable)
 			if issue.CompactionLevel > 0 {
-				fmt.Println()
+				out.WriteString("\n")
 				if issue.OriginalSize > 0 {
 					currentSize := len(issue.Description) + len(issue.Design) + len(issue.Notes) + len(issue.AcceptanceCriteria)
 					saved := issue.OriginalSize - currentSize
 					if saved > 0 {
 						reduction := float64(saved) / float64(issue.OriginalSize) * 100
-						fmt.Printf("📊 %d → %d bytes (%.0f%% reduction)\n",
+						fmt.Fprintf(&out, "%d → %d bytes (%.0f%% reduction)\n",
 							issue.OriginalSize, currentSize, reduction)
 					}
 				}
@@ -175,27 +182,27 @@ var showCmd = &cobra.Command{
 
 			// Content sections
 			if issue.Description != "" {
-				fmt.Printf("\n%s\n%s\n", ui.RenderBold("DESCRIPTION"), ui.RenderMarkdown(issue.Description))
+				fmt.Fprintf(&out, "\n%s\n%s\n", ui.RenderBold("DESCRIPTION"), ui.RenderMarkdown(issue.Description))
 			}
 			if issue.Design != "" {
-				fmt.Printf("\n%s\n%s\n", ui.RenderBold("DESIGN"), ui.RenderMarkdown(issue.Design))
+				fmt.Fprintf(&out, "\n%s\n%s\n", ui.RenderBold("DESIGN"), ui.RenderMarkdown(issue.Design))
 			}
 			if issue.Notes != "" {
-				fmt.Printf("\n%s\n%s\n", ui.RenderBold("NOTES"), ui.RenderMarkdown(issue.Notes))
+				fmt.Fprintf(&out, "\n%s\n%s\n", ui.RenderBold("NOTES"), ui.RenderMarkdown(issue.Notes))
 			}
 			if issue.AcceptanceCriteria != "" {
-				fmt.Printf("\n%s\n%s\n", ui.RenderBold("ACCEPTANCE CRITERIA"), ui.RenderMarkdown(issue.AcceptanceCriteria))
+				fmt.Fprintf(&out, "\n%s\n%s\n", ui.RenderBold("ACCEPTANCE CRITERIA"), ui.RenderMarkdown(issue.AcceptanceCriteria))
 			}
 
 			// Show labels
 			labels, _ := issueStore.GetLabels(ctx, issue.ID) // Best effort: show issue even if label fetch fails
 			if len(labels) > 0 {
-				fmt.Printf("\n%s %s\n", ui.RenderBold("LABELS:"), strings.Join(labels, ", "))
+				fmt.Fprintf(&out, "\n%s %s\n", ui.RenderBold("LABELS:"), strings.Join(labels, ", "))
 			}
 
 			// Show custom metadata (GH#1406)
 			if metaStr := formatIssueCustomMetadata(issue); metaStr != "" {
-				fmt.Printf("\n%s\n", metaStr)
+				fmt.Fprintf(&out, "\n%s\n", metaStr)
 			}
 
 			// Collect related issues from both directions for deduplication
@@ -232,21 +239,24 @@ var showCmd = &cobra.Command{
 				}
 
 				if len(parent) > 0 {
-					fmt.Printf("\n%s\n", ui.RenderBold("PARENT"))
+					fmt.Fprintf(&out, "\n%s\n", ui.RenderBold("PARENT"))
 					for _, dep := range parent {
-						fmt.Println(formatDependencyLine("↑", dep))
+						out.WriteString(formatDependencyLine("↑", dep))
+						out.WriteString("\n")
 					}
 				}
 				if len(blocks) > 0 {
-					fmt.Printf("\n%s\n", ui.RenderBold("DEPENDS ON"))
+					fmt.Fprintf(&out, "\n%s\n", ui.RenderBold("DEPENDS ON"))
 					for _, dep := range blocks {
-						fmt.Println(formatDependencyLine("→", dep))
+						out.WriteString(formatDependencyLine("→", dep))
+						out.WriteString("\n")
 					}
 				}
 				if len(discovered) > 0 {
-					fmt.Printf("\n%s\n", ui.RenderBold("DISCOVERED FROM"))
+					fmt.Fprintf(&out, "\n%s\n", ui.RenderBold("DISCOVERED FROM"))
 					for _, dep := range discovered {
-						fmt.Println(formatDependencyLine("◊", dep))
+						out.WriteString(formatDependencyLine("◊", dep))
+						out.WriteString("\n")
 					}
 				}
 			}
@@ -272,48 +282,52 @@ var showCmd = &cobra.Command{
 				}
 
 				if len(children) > 0 {
-					fmt.Printf("\n%s\n", ui.RenderBold("CHILDREN"))
+					fmt.Fprintf(&out, "\n%s\n", ui.RenderBold("CHILDREN"))
 					for _, dep := range children {
-						fmt.Println(formatDependencyLine("↳", dep))
+						out.WriteString(formatDependencyLine("↳", dep))
+						out.WriteString("\n")
 					}
 				}
 				if len(blocks) > 0 {
-					fmt.Printf("\n%s\n", ui.RenderBold("BLOCKS"))
+					fmt.Fprintf(&out, "\n%s\n", ui.RenderBold("BLOCKS"))
 					for _, dep := range blocks {
-						fmt.Println(formatDependencyLine("←", dep))
+						out.WriteString(formatDependencyLine("←", dep))
+						out.WriteString("\n")
 					}
 				}
 				if len(discovered) > 0 {
-					fmt.Printf("\n%s\n", ui.RenderBold("DISCOVERED"))
+					fmt.Fprintf(&out, "\n%s\n", ui.RenderBold("DISCOVERED"))
 					for _, dep := range discovered {
-						fmt.Println(formatDependencyLine("◊", dep))
+						out.WriteString(formatDependencyLine("◊", dep))
+						out.WriteString("\n")
 					}
 				}
 			}
 
 			// Print deduplicated RELATED section (bidirectional links shown once)
 			if len(relatedSeen) > 0 {
-				fmt.Printf("\n%s\n", ui.RenderBold("RELATED"))
+				fmt.Fprintf(&out, "\n%s\n", ui.RenderBold("RELATED"))
 				for _, dep := range relatedSeen {
-					fmt.Println(formatDependencyLine("↔", dep))
+					out.WriteString(formatDependencyLine("↔", dep))
+					out.WriteString("\n")
 				}
 			}
 
 			// Show comments
 			comments, _ := issueStore.GetIssueComments(ctx, issue.ID) // Best effort: show issue even if comments unavailable
 			if len(comments) > 0 {
-				fmt.Printf("\n%s\n", ui.RenderBold("COMMENTS"))
+				fmt.Fprintf(&out, "\n%s\n", ui.RenderBold("COMMENTS"))
 				for _, comment := range comments {
-					fmt.Printf("  %s %s\n", ui.RenderMuted(formatTime(comment.CreatedAt)), comment.Author)
+					fmt.Fprintf(&out, "  %s %s\n", ui.RenderMuted(formatTime(comment.CreatedAt)), comment.Author)
 					rendered := ui.RenderMarkdown(comment.Text)
 					// TrimRight removes trailing newlines that Glamour adds, preventing extra blank lines
 					for _, line := range strings.Split(strings.TrimRight(rendered, "\n"), "\n") {
-						fmt.Printf("    %s\n", line)
+						fmt.Fprintf(&out, "    %s\n", line)
 					}
 				}
 			}
 
-			fmt.Println()
+			out.WriteString("\n")
 			result.Close() // Close routed storage after each iteration
 		}
 
@@ -327,6 +341,13 @@ var showCmd = &cobra.Command{
 				FatalErrorRespectJSON("no issues found matching the provided IDs")
 			}
 		} else if foundCount > 0 {
+			if out.Len() > 0 {
+				if err := ui.ToPager(out.String(), ui.PagerOptions{NoPager: noPager}); err != nil {
+					if _, writeErr := fmt.Fprint(os.Stdout, out.String()); writeErr != nil {
+						fmt.Fprintf(os.Stderr, "Error writing output: %v\n", writeErr)
+					}
+				}
+			}
 			// Show tip after successful show (non-JSON mode)
 			maybeShowTip(store)
 		} else {
@@ -349,6 +370,7 @@ func init() {
 	showCmd.Flags().StringArray("id", nil, "Issue ID (use for IDs that look like flags, e.g., --id=gt--xyz)")
 	showCmd.Flags().Bool("local-time", false, "Show timestamps in local time instead of UTC")
 	showCmd.Flags().BoolP("watch", "w", false, "Watch for changes and auto-refresh display")
+	showCmd.Flags().Bool("no-pager", false, "Disable pager output")
 	showCmd.ValidArgsFunction = issueIDCompletion
 	rootCmd.AddCommand(showCmd)
 }

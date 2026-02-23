@@ -20,10 +20,10 @@ func parseTimeFlag(s string) (time.Time, error) {
 	return timeparsing.ParseRelativeTime(s, time.Now())
 }
 
-// pinIndicator returns a pushpin emoji prefix for pinned issues
+// pinIndicator returns a small marker prefix for pinned-context issues
 func pinIndicator(issue *types.Issue) string {
 	if issue.Pinned {
-		return "📌 "
+		return ui.StatusPinnedStyle.Render(ui.PinnedMarkerIcon) + " "
 	}
 	return ""
 }

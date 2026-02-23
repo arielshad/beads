@@ -60,18 +60,18 @@ func formatIssueHeader(issue *types.Issue) string {
 	}
 
 	// Compaction indicator
-	tierEmoji := ""
+	compactionBadge := ""
 	switch issue.CompactionLevel {
 	case 1:
-		tierEmoji = " 🗜️"
+		compactionBadge = " " + ui.RenderMuted("[C1]")
 	case 2:
-		tierEmoji = " 📦"
+		compactionBadge = " " + ui.RenderMuted("[C2]")
 	}
 
 	// Build header: STATUS_ICON ID · Title   [Priority · STATUS]
 	idStyled := ui.RenderAccent(issue.ID)
 	return fmt.Sprintf("%s %s%s · %s%s   [%s · %s]",
-		statusIcon, idStyled, typeBadge, issue.Title, tierEmoji, priorityTag, statusStr)
+		statusIcon, idStyled, typeBadge, issue.Title, compactionBadge, priorityTag, statusStr)
 }
 
 // formatIssueMetadata returns the metadata line(s) with grouped info
