@@ -111,6 +111,7 @@ var readOnlyCommands = map[string]bool{
 	"duplicates": true,
 	"comments":   true, // list comments (not add)
 	"current":    true, // bd sync mode current
+	"ui":         true, // interactive TUI is read-only
 	// NOTE: "export" is NOT read-only - it writes to clear dirty issues
 }
 
