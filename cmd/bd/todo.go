@@ -72,7 +72,7 @@ var addTodoCmd = &cobra.Command{
 			}
 			fmt.Println(string(data))
 		} else {
-			fmt.Printf("Created %s: %s\n", ui.RenderID(issue.ID), issue.Title)
+			fmt.Printf("%s Created %s: %s\n", ui.RenderPassIcon(), ui.RenderID(issue.ID), issue.Title)
 		}
 	},
 }
@@ -81,54 +81,7 @@ var listTodosCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List TODO items",
 	Run: func(cmd *cobra.Command, args []string) {
-		// Get show-all flag
-		showAll, _ := cmd.Flags().GetBool("all")
-
-		ctx := rootCtx
-
-		// Build filter for task-type issues
-		taskType := types.TypeTask
-		filter := types.IssueFilter{
-			IssueType: &taskType,
-		}
-		if !showAll {
-			openStatus := types.StatusOpen
-			filter.Status = &openStatus
-		}
-
-		issues, err := getStore().SearchIssues(ctx, "", filter)
-		if err != nil {
-			FatalError("failed to list TODOs: %v", err)
-		}
-
-		if jsonOutput {
-			data, err := json.MarshalIndent(issues, "", "  ")
-			if err != nil {
-				FatalError("failed to marshal JSON: %v", err)
-			}
-			fmt.Println(string(data))
-		} else {
-			if len(issues) == 0 {
-				fmt.Println("No TODOs found")
-				return
-			}
-
-			// Sort by priority then ID
-			todoSortIssues(issues)
-
-			// Pretty print
-			for _, issue := range issues {
-				statusIcon := ui.RenderStatusIcon(string(issue.Status))
-				priority := ui.RenderPriority(issue.Priority)
-				fmt.Printf("  %s %s  %-40s  %s  %s\n",
-					statusIcon,
-					ui.RenderID(issue.ID),
-					todoTruncate(issue.Title, 40),
-					priority,
-					issue.Status)
-			}
-			fmt.Printf("\nTotal: %d TODOs\n", len(issues))
-		}
+		runTodoList(cmd)
 	},
 }
 
@@ -177,10 +130,95 @@ var doneTodoCmd = &cobra.Command{
 			fmt.Println(string(data))
 		} else {
 			for _, id := range closedIDs {
-				fmt.Printf("Closed %s\n", ui.RenderID(id))
+				fmt.Printf("%s Closed %s\n", ui.RenderPassIcon(), ui.RenderID(id))
 			}
 		}
 	},
+}
+
+func runTodoList(cmd *cobra.Command) {
+	// Get UI/list flags
+	showAll, _ := cmd.Flags().GetBool("all")
+	prettyFormat, _ := cmd.Flags().GetBool("pretty")
+	plainFormat, _ := cmd.Flags().GetBool("plain")
+	noPager, _ := cmd.Flags().GetBool("no-pager")
+
+	ctx := rootCtx
+
+	// Build filter for task-type issues
+	taskType := types.TypeTask
+	filter := types.IssueFilter{
+		IssueType: &taskType,
+	}
+	if !showAll {
+		openStatus := types.StatusOpen
+		filter.Status = &openStatus
+	}
+
+	issues, err := getStore().SearchIssues(ctx, "", filter)
+	if err != nil {
+		FatalError("failed to list TODOs: %v", err)
+	}
+
+	if jsonOutput {
+		data, err := json.MarshalIndent(issues, "", "  ")
+		if err != nil {
+			FatalError("failed to marshal JSON: %v", err)
+		}
+		fmt.Println(string(data))
+		return
+	}
+
+	// Sort by priority then ID for stable output in all modes
+	todoSortIssues(issues)
+
+	// Plain output is useful for scripts/logging and preferred in agent mode.
+	usePlain := plainFormat || !prettyFormat || ui.IsAgentMode()
+	output := renderTodoListOutput(issues, usePlain)
+
+	// Agent mode is non-interactive by design; avoid pager overhead.
+	noPager = noPager || ui.IsAgentMode()
+	if err := ui.ToPager(output, ui.PagerOptions{NoPager: noPager}); err != nil {
+		fmt.Print(output)
+	}
+}
+
+func renderTodoListOutput(issues []*types.Issue, plain bool) string {
+	if len(issues) == 0 {
+		return "No TODOs found\n"
+	}
+
+	var out strings.Builder
+	for i, issue := range issues {
+		if plain {
+			fmt.Fprintf(&out, "%d. [P%d] %s: %s (%s)\n",
+				i+1,
+				issue.Priority,
+				issue.ID,
+				issue.Title,
+				issue.Status)
+			continue
+		}
+
+		statusIcon := ui.RenderStatusIcon(string(issue.Status))
+		priority := ui.RenderPriority(issue.Priority)
+		fmt.Fprintf(&out, "  %s %s  %-40s  %s  %s\n",
+			statusIcon,
+			ui.RenderID(issue.ID),
+			todoTruncate(issue.Title, 40),
+			priority,
+			ui.RenderStatus(string(issue.Status)))
+	}
+
+	fmt.Fprintf(&out, "\nTotal: %d TODOs\n", len(issues))
+	return out.String()
+}
+
+func registerTodoListFlags(cmd *cobra.Command) {
+	cmd.Flags().Bool("all", false, "Show all TODOs including completed")
+	cmd.Flags().Bool("pretty", true, "Display TODOs with semantic symbols and styling")
+	cmd.Flags().Bool("plain", false, "Display TODOs as plain numbered list")
+	cmd.Flags().Bool("no-pager", false, "Disable pager output")
 }
 
 func init() {
@@ -193,7 +231,8 @@ func init() {
 	addTodoCmd.Flags().IntP("priority", "p", 2, "Priority (0-4, default 2)")
 	addTodoCmd.Flags().StringP("description", "d", "", "Description")
 
-	listTodosCmd.Flags().Bool("all", false, "Show all TODOs including completed")
+	registerTodoListFlags(todoCmd)
+	registerTodoListFlags(listTodosCmd)
 
 	doneTodoCmd.Flags().String("reason", "", "Reason for closing (default: Completed)")
 

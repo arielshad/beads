@@ -34,6 +34,9 @@ List all open task-type issues.
 bd todo                  # List open TODOs
 bd todo list            # Same as above
 bd todo list --all      # Show completed TODOs too
+bd todo --plain         # Plain numbered output (default action supports flags)
+bd todo list --pretty=false  # Disable styled table output
+bd todo list --no-pager # Print directly without pager
 bd todo list --json     # JSON output
 ```
 
@@ -44,6 +47,20 @@ bd todo list --json     # JSON output
 
 Total: 2 TODOs
 ```
+
+**Plain output (`--plain`):**
+```
+1. [P1] test-yxg: Fix the login bug (open)
+2. [P3] test-ryl: Update documentation (open)
+
+Total: 2 TODOs
+```
+
+**List flags:**
+- `--all`: Show all TODOs including completed items
+- `--pretty` (default: `true`): Styled tabular output with semantic symbols
+- `--plain`: Plain numbered output (overrides pretty mode)
+- `--no-pager`: Disable pager output
 
 ### `bd todo add <title>`
 
