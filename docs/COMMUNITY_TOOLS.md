@@ -2,6 +2,8 @@
 
 A curated list of community-built UIs, extensions, and integrations for Beads. Ranked by activity and maturity.
 
+**Discover UIs from the CLI:** Run `bd ui` (or `bd ui --json`) to list available UIs with install commands.
+
 ## Terminal UIs
 
 - **[beads_viewer](https://github.com/Dicklesworthstone/beads_viewer)** - Elegant, keyboard-driven terminal interface with tree navigation and vim-style commands. Built by [@Dicklesworthstone](https://github.com/Dicklesworthstone). (Go)
