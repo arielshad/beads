@@ -73,7 +73,7 @@ func TestRenderTodoListOutput_Pretty(t *testing.T) {
 	if !strings.Contains(got, "bd-200") || !strings.Contains(got, "bd-201") {
 		t.Fatalf("pretty output missing IDs: %q", got)
 	}
-	if !strings.Contains(got, "A very long title that should be truncat...") {
+	if !strings.Contains(got, todoTruncate(issues[1].Title, 40)) {
 		t.Fatalf("pretty output should truncate long titles: %q", got)
 	}
 	if !strings.Contains(got, "Total: 2 TODOs") {
