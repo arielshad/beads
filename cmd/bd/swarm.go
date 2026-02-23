@@ -510,7 +510,7 @@ func computeReadyFronts(analysis *SwarmAnalysis) {
 
 // renderSwarmAnalysis outputs human-readable analysis.
 func renderSwarmAnalysis(analysis *SwarmAnalysis) {
-	fmt.Printf("\n%s Swarm Analysis: %s\n", ui.RenderAccent("🐝"), analysis.EpicTitle)
+	fmt.Printf("\n%s Swarm Analysis: %s\n", ui.RenderInfoIcon(), analysis.EpicTitle)
 	fmt.Printf("   Epic ID: %s\n", analysis.EpicID)
 	fmt.Printf("   Total issues: %d (%d closed)\n", analysis.TotalIssues, analysis.ClosedIssues)
 
@@ -521,7 +521,7 @@ func renderSwarmAnalysis(analysis *SwarmAnalysis) {
 
 	// Ready fronts
 	if len(analysis.ReadyFronts) > 0 {
-		fmt.Printf("\n%s Ready Fronts (waves of parallel work):\n", ui.RenderPass("📊"))
+		fmt.Printf("\n%s Ready Fronts (waves of parallel work):\n", ui.RenderPassIcon())
 		for _, front := range analysis.ReadyFronts {
 			fmt.Printf("   Wave %d: %d issues\n", front.Wave+1, len(front.Issues))
 			for i, id := range front.Issues {
@@ -535,7 +535,7 @@ func renderSwarmAnalysis(analysis *SwarmAnalysis) {
 	}
 
 	// Summary stats
-	fmt.Printf("\n%s Summary:\n", ui.RenderAccent("📈"))
+	fmt.Printf("\n%s Summary:\n", ui.RenderInfoIcon())
 	fmt.Printf("   Estimated worker-sessions: %d\n", analysis.EstimatedSessions)
 	fmt.Printf("   Max parallelism: %d\n", analysis.MaxParallelism)
 	fmt.Printf("   Total waves: %d\n", len(analysis.ReadyFronts))
@@ -550,7 +550,7 @@ func renderSwarmAnalysis(analysis *SwarmAnalysis) {
 
 	// Errors
 	if len(analysis.Errors) > 0 {
-		fmt.Printf("\n%s Errors:\n", ui.RenderFail("❌"))
+		fmt.Printf("\n%s Errors:\n", ui.RenderFailIcon())
 		for _, err := range analysis.Errors {
 			fmt.Printf("   • %s\n", err)
 		}
@@ -793,7 +793,7 @@ func getSwarmStatus(ctx context.Context, s SwarmStorage, epic *types.Issue) (*Sw
 
 // renderSwarmStatus outputs human-readable swarm status.
 func renderSwarmStatus(status *SwarmStatus) {
-	fmt.Printf("\n%s Ready Front Analysis: %s\n\n", ui.RenderAccent("🐝"), status.EpicTitle)
+	fmt.Printf("\n%s Ready Front Analysis: %s\n\n", ui.RenderInfoIcon(), status.EpicTitle)
 
 	// Completed
 	fmt.Printf("Completed:     ")
@@ -1152,7 +1152,7 @@ Examples:
 		}
 
 		// Human-readable output
-		fmt.Printf("\n%s Active Swarms (%d)\n\n", ui.RenderAccent("🐝"), len(items))
+		fmt.Printf("\n%s Active Swarms (%d)\n\n", ui.RenderInfoIcon(), len(items))
 		for _, item := range items {
 			// Progress indicator
 			progressStr := fmt.Sprintf("%d/%d", item.Completed, item.Total)

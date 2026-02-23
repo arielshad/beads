@@ -1146,7 +1146,7 @@ func showWhatsNew() {
 		fmt.Println()
 	}
 
-	fmt.Println("💡 Tip: Use `bd info --whats-new --json` for machine-readable output")
+	fmt.Printf("%s %s\n", ui.RenderInfoIcon(), "Tip: Use `bd info --whats-new --json` for machine-readable output")
 	fmt.Println()
 }
 

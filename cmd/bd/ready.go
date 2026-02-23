@@ -160,9 +160,9 @@ This is useful for agents executing molecules to see which steps can run next.`,
 			}
 			if hasOpenIssues {
 				fmt.Printf("\n%s No ready work found (all issues have blocking dependencies)\n\n",
-					ui.RenderWarn("✨"))
+					ui.RenderWarnIcon())
 			} else {
-				fmt.Printf("\n%s No open issues\n\n", ui.RenderPass("✨"))
+				fmt.Printf("\n%s No open issues\n\n", ui.RenderPassIcon())
 			}
 			// Show tip even when no ready work found
 			maybeShowTip(store)
@@ -188,7 +188,7 @@ This is useful for agents executing molecules to see which steps can run next.`,
 		// Determine display mode: --plain or --pretty=false triggers plain format
 		usePlain := plainFormat || !prettyFormat
 		if usePlain {
-			fmt.Printf("\n%s Ready work (%d issues with no active blockers):\n\n", ui.RenderAccent("📋"), len(issues))
+			fmt.Printf("\n%s Ready work (%d issues with no active blockers):\n\n", ui.RenderInfoIcon(), len(issues))
 			for i, issue := range issues {
 				fmt.Printf("%d. [%s] [%s] %s: %s\n", i+1,
 					ui.RenderPriority(issue.Priority),
@@ -240,10 +240,10 @@ var blockedCmd = &cobra.Command{
 			return
 		}
 		if len(blocked) == 0 {
-			fmt.Printf("\n%s No blocked issues\n\n", ui.RenderPass("✨"))
+			fmt.Printf("\n%s No blocked issues\n\n", ui.RenderPassIcon())
 			return
 		}
-		fmt.Printf("\n%s Blocked issues (%d):\n\n", ui.RenderFail("🚫"), len(blocked))
+		fmt.Printf("\n%s Blocked issues (%d):\n\n", ui.RenderFailIcon(), len(blocked))
 		for _, issue := range blocked {
 			fmt.Printf("[%s] %s: %s\n",
 				ui.RenderPriority(issue.Priority),
@@ -383,18 +383,18 @@ func runMoleculeReady(_ *cobra.Command, molIDArg string) {
 	}
 
 	// Human-readable output
-	fmt.Printf("\n%s Ready steps in molecule: %s\n", ui.RenderAccent("🧪"), subgraph.Root.Title)
+	fmt.Printf("\n%s Ready steps in molecule: %s\n", ui.RenderInfoIcon(), subgraph.Root.Title)
 	fmt.Printf("   ID: %s\n", moleculeID)
 	fmt.Printf("   Total: %d steps, %d ready\n", analysis.TotalSteps, len(readySteps))
 
 	if len(readySteps) == 0 {
-		fmt.Printf("\n%s No ready steps (all blocked or completed)\n\n", ui.RenderWarn("✨"))
+		fmt.Printf("\n%s No ready steps (all blocked or completed)\n\n", ui.RenderWarnIcon())
 		return
 	}
 
 	// Show parallel groups if any
 	if len(analysis.ParallelGroups) > 0 {
-		fmt.Printf("\n%s Parallel Groups:\n", ui.RenderPass("⚡"))
+		fmt.Printf("\n%s Parallel Groups:\n", ui.RenderInfoIcon())
 		for groupName, members := range analysis.ParallelGroups {
 			// Check if any members are ready
 			readyInGroup := 0
@@ -409,7 +409,7 @@ func runMoleculeReady(_ *cobra.Command, molIDArg string) {
 		}
 	}
 
-	fmt.Printf("\n%s Ready steps:\n\n", ui.RenderPass("📋"))
+	fmt.Printf("\n%s Ready steps:\n\n", ui.RenderInfoIcon())
 	for i, step := range readySteps {
 		// Show parallel group if in one
 		groupAnnotation := ""

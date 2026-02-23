@@ -47,7 +47,7 @@ Examples:
 
 		// Display diff in human-readable format
 		fmt.Printf("\n%s Changes from %s to %s (%d issues affected)\n\n",
-			ui.RenderAccent("📊"),
+			ui.RenderInfoIcon(),
 			ui.RenderMuted(fromRef),
 			ui.RenderMuted(toRef),
 			len(entries))

@@ -407,9 +407,9 @@ Examples:
 		}
 
 		if direction == "up" {
-			fmt.Printf("\n%s Issues that depend on %s:\n\n", ui.RenderAccent("📋"), fullID)
+			fmt.Printf("\n%s Issues that depend on %s:\n\n", ui.RenderInfoIcon(), fullID)
 		} else {
-			fmt.Printf("\n%s %s depends on:\n\n", ui.RenderAccent("📋"), fullID)
+			fmt.Printf("\n%s %s depends on:\n\n", ui.RenderInfoIcon(), fullID)
 		}
 
 		for _, iss := range issues {
@@ -590,11 +590,11 @@ Examples:
 
 		switch direction {
 		case "up":
-			fmt.Printf("\n%s Dependent tree for %s:\n\n", ui.RenderAccent("🌲"), fullID)
+			fmt.Printf("\n%s Dependent tree for %s:\n\n", ui.RenderInfoIcon(), fullID)
 		case "both":
-			fmt.Printf("\n%s Full dependency graph for %s:\n\n", ui.RenderAccent("🌲"), fullID)
+			fmt.Printf("\n%s Full dependency graph for %s:\n\n", ui.RenderInfoIcon(), fullID)
 		default:
-			fmt.Printf("\n%s Dependency tree for %s:\n\n", ui.RenderAccent("🌲"), fullID)
+			fmt.Printf("\n%s Dependency tree for %s:\n\n", ui.RenderInfoIcon(), fullID)
 		}
 
 		// Render tree with proper connectors

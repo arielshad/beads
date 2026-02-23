@@ -188,7 +188,7 @@ func printServerHealthResult(result doctor.ServerHealthResult) {
 
 // printCheckHealthHint prints the health check hint and exits with error.
 func printCheckHealthHint(issues []string) {
-	fmt.Fprintf(os.Stderr, "💡 bd doctor recommends a health check:\n")
+	fmt.Fprintf(os.Stderr, "%s bd doctor recommends a health check:\n", ui.RenderInfoIcon())
 	for _, issue := range issues {
 		fmt.Fprintf(os.Stderr, "   • %s\n", issue)
 	}

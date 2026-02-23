@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/steveyegge/beads/internal/beads"
 	"github.com/steveyegge/beads/internal/configfile"
+	"github.com/steveyegge/beads/internal/ui"
 )
 
 var upgradeCmd = &cobra.Command{
@@ -51,7 +52,7 @@ Examples:
 
 		// Human-readable output
 		if versionUpgradeDetected {
-			fmt.Printf("✨ bd upgraded from v%s to v%s\n", previousVersion, Version)
+			fmt.Printf("%s bd upgraded from v%s to v%s\n", ui.RenderInfoIcon(), previousVersion, Version)
 			newVersions := getVersionsSince(previousVersion)
 			if len(newVersions) > 0 {
 				fmt.Printf("   %d version%s with changes available\n",
@@ -110,7 +111,7 @@ Examples:
 		}
 
 		// Human-readable output
-		fmt.Printf("\n🔄 Upgraded from v%s to v%s\n", lastVersion, Version)
+		fmt.Printf("\n%s Upgraded from v%s to v%s\n", ui.RenderInfoIcon(), lastVersion, Version)
 		fmt.Println(strings.Repeat("=", 60))
 		fmt.Println()
 
@@ -134,7 +135,7 @@ Examples:
 			fmt.Println()
 		}
 
-		fmt.Println("💡 Run 'bd upgrade ack' to mark this version as seen")
+		fmt.Printf("%s Run 'bd upgrade ack' to mark this version as seen\n", ui.RenderInfoIcon())
 		fmt.Println()
 	},
 }

@@ -52,7 +52,7 @@ Examples:
 
 		// Display history in human-readable format
 		fmt.Printf("\n%s History for %s (%d entries)\n\n",
-			ui.RenderAccent("📜"), issueID, len(history))
+			ui.RenderInfoIcon(), issueID, len(history))
 
 		for i, entry := range history {
 			// Commit info line

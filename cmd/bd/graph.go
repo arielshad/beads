@@ -546,7 +546,7 @@ func renderGraph(layout *GraphLayout, subgraph *TemplateSubgraph) {
 		return
 	}
 
-	fmt.Printf("\n%s Dependency graph for %s:\n\n", ui.RenderAccent("📊"), layout.RootID)
+	fmt.Printf("\n%s Dependency graph for %s:\n\n", ui.RenderInfoIcon(), layout.RootID)
 
 	// Calculate box width based on longest title
 	maxTitleLen := 0
@@ -637,7 +637,7 @@ func renderGraphCompact(layout *GraphLayout, subgraph *TemplateSubgraph) {
 	}
 
 	fmt.Printf("\n%s Dependency graph for %s (%d issues, %d layers)\n\n",
-		ui.RenderAccent("📊"), layout.RootID, len(layout.Nodes), len(layout.Layers))
+		ui.RenderInfoIcon(), layout.RootID, len(layout.Nodes), len(layout.Layers))
 
 	// Legend
 	fmt.Println("  Status: ○ open  ◐ in_progress  ● blocked  ✓ closed  ❄ deferred")

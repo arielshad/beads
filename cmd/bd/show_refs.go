@@ -58,7 +58,7 @@ func showIssueRefs(ctx context.Context, args []string, jsonOut bool) {
 			continue
 		}
 
-		fmt.Printf("\n%s References to %s:\n", ui.RenderAccent("📎"), issueID)
+		fmt.Printf("\n%s References to %s:\n", ui.RenderInfoIcon(), issueID)
 
 		// Group refs by type
 		refsByType := make(map[types.DependencyType][]*types.IssueWithDependencyMetadata)
@@ -96,9 +96,8 @@ func showIssueRefs(ctx context.Context, args []string, jsonOut bool) {
 // displayRefGroup displays a group of references with a given type
 // Closed items get entire row muted - the work is done, no need for attention
 func displayRefGroup(depType types.DependencyType, refs []*types.IssueWithDependencyMetadata) {
-	// Get emoji for type
-	emoji := getRefTypeEmoji(depType)
-	fmt.Printf("\n  %s %s (%d):\n", emoji, depType, len(refs))
+	icon := getRefTypeIcon(depType)
+	fmt.Printf("\n  %s %s (%d):\n", icon, depType, len(refs))
 
 	for _, ref := range refs {
 		// Closed items: mute entire row since the work is complete
@@ -126,37 +125,38 @@ func displayRefGroup(depType types.DependencyType, refs []*types.IssueWithDepend
 	}
 }
 
-// getRefTypeEmoji returns an emoji for a dependency/reference type
-func getRefTypeEmoji(depType types.DependencyType) string {
+// getRefTypeIcon returns a compact symbol for a dependency/reference type.
+// Keep these as small Unicode symbols (not emoji decorations) for consistency.
+func getRefTypeIcon(depType types.DependencyType) string {
 	switch depType {
 	case types.DepUntil:
-		return "⏳" // Hourglass - waiting until
+		return "⧖" // waiting until
 	case types.DepCausedBy:
-		return "⚡" // Lightning - triggered by
+		return "↯" // triggered by
 	case types.DepValidates:
-		return "✅" // Checkmark - validates
+		return "✓" // validates
 	case types.DepBlocks:
-		return "🚫" // Blocked
+		return "⊘" // blocks
 	case types.DepParentChild:
 		return "↳" // Child arrow
 	case types.DepRelatesTo, types.DepRelated:
 		return "↔" // Bidirectional
 	case types.DepTracks:
-		return "👁" // Watching
+		return "≋" // tracks
 	case types.DepDiscoveredFrom:
 		return "◊" // Diamond - discovered
 	case types.DepSupersedes:
-		return "⬆" // Upgrade
+		return "↑" // supersedes
 	case types.DepDuplicates:
-		return "🔄" // Duplicate
+		return "≡" // duplicates
 	case types.DepRepliesTo:
-		return "💬" // Chat
+		return "↩" // replies to
 	case types.DepApprovedBy:
-		return "👍" // Approved
+		return "+" // approved
 	case types.DepAuthoredBy:
-		return "✏" // Authored
+		return "✎" // authored
 	case types.DepAssignedTo:
-		return "👤" // Assigned
+		return "@" // assigned
 	default:
 		return "→" // Default arrow
 	}

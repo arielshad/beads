@@ -25,6 +25,7 @@ import (
 	"github.com/steveyegge/beads/internal/molecules"
 	"github.com/steveyegge/beads/internal/storage/dolt"
 	"github.com/steveyegge/beads/internal/telemetry"
+	"github.com/steveyegge/beads/internal/ui"
 	"github.com/steveyegge/beads/internal/utils"
 	"go.opentelemetry.io/otel/attribute"
 	oteltrace "go.opentelemetry.io/otel/trace"
@@ -406,7 +407,7 @@ var rootCmd = &cobra.Command{
 		if !cmd.Flags().Changed("sandbox") {
 			if isSandboxed() {
 				sandboxMode = true
-				fmt.Fprintf(os.Stderr, "ℹ️  Sandbox detected, using direct mode\n")
+				fmt.Fprintf(os.Stderr, "%s  Sandbox detected, using direct mode\n", ui.RenderInfoIcon())
 			}
 		}
 

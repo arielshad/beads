@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/steveyegge/beads/internal/storage/dolt"
+	"github.com/steveyegge/beads/internal/ui"
 )
 
 // Tip represents a contextual hint that can be shown to users after successful commands
@@ -76,7 +77,8 @@ func maybeShowTip(store *dolt.DoltStore) {
 	}
 
 	// Display tip to stdout (informational, not an error)
-	_, _ = fmt.Fprintf(os.Stdout, "\n💡 Tip: %s\n", tip.Message)
+	// Use UI tokens (no emoji decorations).
+	_, _ = fmt.Fprintf(os.Stdout, "\n%s %s %s\n", ui.RenderInfoIcon(), ui.RenderAccent("Tip:"), tip.Message)
 
 	// Record that we showed this tip
 	recordTipShown(store, tip.ID)

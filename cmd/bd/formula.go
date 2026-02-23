@@ -149,7 +149,7 @@ func runFormulaList(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	fmt.Printf("📜 Formulas (%d found)\n\n", len(entries))
+	fmt.Printf("%s Formulas (%d found)\n\n", ui.RenderInfoIcon(), len(entries))
 
 	// Group by type
 	byType := make(map[string][]FormulaListEntry)
@@ -212,7 +212,7 @@ func runFormulaShow(cmd *cobra.Command, args []string) {
 
 	// Print extends
 	if len(f.Extends) > 0 {
-		fmt.Printf("\n%s Extends:\n", ui.RenderAccent("📎"))
+		fmt.Printf("\n%s Extends:\n", ui.RenderInfoIcon())
 		for _, ext := range f.Extends {
 			fmt.Printf("   - %s\n", ext)
 		}
@@ -220,7 +220,7 @@ func runFormulaShow(cmd *cobra.Command, args []string) {
 
 	// Print variables
 	if len(f.Vars) > 0 {
-		fmt.Printf("\n%s Variables:\n", ui.RenderWarn("📝"))
+		fmt.Printf("\n%s Variables:\n", ui.RenderWarnIcon())
 		// Sort for consistent output
 		varNames := make([]string, 0, len(f.Vars))
 		for name := range f.Vars {
@@ -257,19 +257,19 @@ func runFormulaShow(cmd *cobra.Command, args []string) {
 
 	// Print steps
 	if len(f.Steps) > 0 {
-		fmt.Printf("\n%s Steps (%d):\n", ui.RenderPass("🌲"), countSteps(f.Steps))
+		fmt.Printf("\n%s Steps (%d):\n", ui.RenderInfoIcon(), countSteps(f.Steps))
 		printFormulaStepsTree(f.Steps, "   ")
 	}
 
 	// Print template (for expansion formulas)
 	if len(f.Template) > 0 {
-		fmt.Printf("\n%s Template (%d steps):\n", ui.RenderAccent("📐"), len(f.Template))
+		fmt.Printf("\n%s Template (%d steps):\n", ui.RenderInfoIcon(), len(f.Template))
 		printFormulaStepsTree(f.Template, "   ")
 	}
 
 	// Print advice rules
 	if len(f.Advice) > 0 {
-		fmt.Printf("\n%s Advice:\n", ui.RenderWarn("💡"))
+		fmt.Printf("\n%s Advice:\n", ui.RenderWarnIcon())
 		for _, a := range f.Advice {
 			parts := []string{}
 			if a.Before != nil {
@@ -328,7 +328,7 @@ func runFormulaShow(cmd *cobra.Command, args []string) {
 
 	// Print pointcuts (for aspects)
 	if len(f.Pointcuts) > 0 {
-		fmt.Printf("\n%s Pointcuts:\n", ui.RenderWarn("🎯"))
+		fmt.Printf("\n%s Pointcuts:\n", ui.RenderWarnIcon())
 		for _, p := range f.Pointcuts {
 			parts := []string{}
 			if p.Glob != "" {
@@ -425,13 +425,13 @@ func truncateDescription(desc string, maxLen int) string {
 func getTypeIcon(t string) string {
 	switch t {
 	case "workflow":
-		return "📋"
+		return "≡"
 	case "expansion":
-		return "📐"
+		return "+"
 	case "aspect":
-		return "🎯"
+		return "◈"
 	default:
-		return "📜"
+		return "·"
 	}
 }
 

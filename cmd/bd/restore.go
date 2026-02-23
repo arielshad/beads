@@ -101,7 +101,7 @@ func displayRestoredIssue(issue *types.Issue, commitHash string) {
 	if len(hashDisplay) > 8 {
 		hashDisplay = hashDisplay[:8]
 	}
-	fmt.Printf("\n%s %s (restored from Dolt commit %s)\n", ui.RenderAccent("📜"), ui.RenderBold(issue.ID), ui.RenderWarn(hashDisplay))
+	fmt.Printf("\n%s %s (restored from Dolt commit %s)\n", ui.RenderInfoIcon(), ui.RenderBold(issue.ID), ui.RenderWarn(hashDisplay))
 	fmt.Printf("%s\n\n", ui.RenderBold(issue.Title))
 
 	if issue.Description != "" {

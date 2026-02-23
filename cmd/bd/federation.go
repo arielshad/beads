@@ -176,7 +176,7 @@ func runFederationSync(cmd *cobra.Command, args []string) {
 	var results []*dolt.SyncResult
 	for _, peer := range peers {
 		if !jsonOutput {
-			fmt.Printf("%s Syncing with %s...\n", ui.RenderAccent("🔄"), peer)
+			fmt.Printf("%s Syncing with %s...\n", ui.RenderInfoIcon(), peer)
 		}
 
 		result, err := ds.Sync(ctx, peer, federationStrategy)

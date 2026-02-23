@@ -52,10 +52,10 @@ This helps identify:
 
 func displayStaleIssues(issues []*types.Issue, days int) {
 	if len(issues) == 0 {
-		fmt.Printf("\n%s No stale issues found (all active)\n\n", ui.RenderPass("✨"))
+		fmt.Printf("\n%s No stale issues found (all active)\n\n", ui.RenderPassIcon())
 		return
 	}
-	fmt.Printf("\n%s Stale issues (%d not updated in %d+ days):\n\n", ui.RenderWarn("⏰"), len(issues), days)
+	fmt.Printf("\n%s Stale issues (%d not updated in %d+ days):\n\n", ui.RenderWarnIcon(), len(issues), days)
 	now := time.Now()
 	for i, issue := range issues {
 		daysStale := int(now.Sub(issue.UpdatedAt).Hours() / 24)

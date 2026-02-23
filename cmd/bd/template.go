@@ -167,21 +167,21 @@ func showBeadsTemplate(subgraph *TemplateSubgraph) {
 		return
 	}
 
-	fmt.Printf("\n%s Template: %s\n", ui.RenderAccent("📋"), subgraph.Root.Title)
+	fmt.Printf("\n%s Template: %s\n", ui.RenderInfoIcon(), subgraph.Root.Title)
 	fmt.Printf("   ID: %s\n", subgraph.Root.ID)
 	fmt.Printf("   Issues: %d\n", len(subgraph.Issues))
 
 	// Show variables
 	vars := extractAllVariables(subgraph)
 	if len(vars) > 0 {
-		fmt.Printf("\n%s Variables:\n", ui.RenderWarn("📝"))
+		fmt.Printf("\n%s Variables:\n", ui.RenderWarnIcon())
 		for _, v := range vars {
 			fmt.Printf("   {{%s}}\n", v)
 		}
 	}
 
 	// Show structure
-	fmt.Printf("\n%s Structure:\n", ui.RenderPass("🌲"))
+	fmt.Printf("\n%s Structure:\n", ui.RenderInfoIcon())
 	printTemplateTree(subgraph, subgraph.Root.ID, 0, true)
 	fmt.Println()
 }

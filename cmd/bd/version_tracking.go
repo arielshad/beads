@@ -134,9 +134,9 @@ func maybeShowUpgradeNotification() {
 	upgradeAcknowledged = true
 
 	// Display notification
-	fmt.Printf("🔄 bd upgraded from v%s to v%s since last use\n", previousVersion, Version)
-	fmt.Println("💡 Run 'bd upgrade review' to see what changed")
-	fmt.Println("💊 Run 'bd doctor' to verify upgrade completed cleanly")
+	fmt.Printf("%s bd upgraded from v%s to v%s since last use\n", ui.RenderInfoIcon(), previousVersion, Version)
+	fmt.Printf("%s Run 'bd upgrade review' to see what changed\n", ui.RenderInfoIcon())
+	fmt.Printf("%s Run 'bd doctor' to verify upgrade completed cleanly\n", ui.RenderInfoIcon())
 
 	fmt.Println()
 }

@@ -304,7 +304,7 @@ Example:
 			return
 		}
 
-		fmt.Printf("\n%s State for %s:\n", ui.RenderAccent("📊"), fullID)
+		fmt.Printf("\n%s State for %s:\n", ui.RenderInfoIcon(), fullID)
 		for dimension, value := range states {
 			fmt.Printf("  %s: %s\n", dimension, value)
 		}

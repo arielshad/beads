@@ -138,7 +138,7 @@ Example:
 					fmt.Printf("%s Merged %d group(s)\n", ui.RenderPass("✓"), len(mergeCommands))
 				}
 			} else {
-				fmt.Printf("%s Run with --auto-merge to execute all suggested merges\n", ui.RenderAccent("💡"))
+				fmt.Printf("%s Run with --auto-merge to execute all suggested merges\n", ui.RenderInfoIcon())
 			}
 		}
 	},

@@ -14,7 +14,7 @@ import (
 
 // showDetectPollutionDeprecationHint shows a hint about bd doctor consolidation
 func showDetectPollutionDeprecationHint() {
-	fmt.Fprintln(os.Stderr, ui.RenderMuted("💡 Tip: Use 'bd doctor --check=pollution' instead (this command is deprecated)"))
+	fmt.Fprintln(os.Stderr, ui.RenderMuted("Tip: Use 'bd doctor --check=pollution' instead (this command is deprecated)"))
 }
 
 var detectPollutionCmd = &cobra.Command{

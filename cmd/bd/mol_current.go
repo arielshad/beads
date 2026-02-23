@@ -467,7 +467,7 @@ func printMoleculeProgress(mol *MoleculeProgress) {
 		hintStepID = mol.NextStep.ID
 	}
 	if hintStepID != "" {
-		fmt.Printf("\n%s Run `bd show %s` to see detailed instructions.\n", ui.RenderAccent("💡"), hintStepID)
+		fmt.Printf("\n%s Run `bd show %s` to see detailed instructions.\n", ui.RenderInfoIcon(), hintStepID)
 	}
 }
 
@@ -659,7 +659,7 @@ func printLargeMoleculeSummary(stats *types.MoleculeProgressStats) {
 
 	// Show hint about viewing step instructions
 	if stats.CurrentStepID != "" {
-		fmt.Printf("\n%s Run `bd show %s` to see detailed instructions.\n", ui.RenderAccent("💡"), stats.CurrentStepID)
+		fmt.Printf("\n%s Run `bd show %s` to see detailed instructions.\n", ui.RenderInfoIcon(), stats.CurrentStepID)
 	}
 }
 

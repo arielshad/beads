@@ -187,7 +187,7 @@ Examples:
 			return
 		}
 
-		fmt.Printf("\n%s Version Control Status\n\n", ui.RenderAccent("📊"))
+		fmt.Printf("\n%s Version Control Status\n\n", ui.RenderInfoIcon())
 		fmt.Printf("  Branch: %s\n", ui.StatusInProgressStyle.Render(currentBranch))
 		fmt.Printf("  Commit: %s\n", ui.RenderMuted(currentCommit[:8]))
 		fmt.Println()

@@ -73,7 +73,7 @@ func showMolecule(subgraph *MoleculeSubgraph) {
 		moleculeType = "Compound"
 	}
 
-	fmt.Printf("\n%s %s: %s\n", ui.RenderAccent("🧪"), moleculeType, subgraph.Root.Title)
+	fmt.Printf("\n%s %s: %s\n", ui.RenderInfoIcon(), moleculeType, subgraph.Root.Title)
 	fmt.Printf("   ID: %s\n", subgraph.Root.ID)
 	fmt.Printf("   Steps: %d\n", len(subgraph.Issues))
 
@@ -84,13 +84,13 @@ func showMolecule(subgraph *MoleculeSubgraph) {
 
 	vars := extractAllVariables(subgraph)
 	if len(vars) > 0 {
-		fmt.Printf("\n%s Variables:\n", ui.RenderWarn("📝"))
+		fmt.Printf("\n%s Variables:\n", ui.RenderWarnIcon())
 		for _, v := range vars {
 			fmt.Printf("   {{%s}}\n", v)
 		}
 	}
 
-	fmt.Printf("\n%s Structure:\n", ui.RenderPass("🌲"))
+	fmt.Printf("\n%s Structure:\n", ui.RenderInfoIcon())
 	printMoleculeTree(subgraph, subgraph.Root.ID, 0, true)
 	fmt.Println()
 }
@@ -429,7 +429,7 @@ func showMoleculeWithParallel(subgraph *MoleculeSubgraph) {
 		moleculeType = "Compound"
 	}
 
-	fmt.Printf("\n%s %s: %s\n", ui.RenderAccent("🧪"), moleculeType, subgraph.Root.Title)
+	fmt.Printf("\n%s %s: %s\n", ui.RenderInfoIcon(), moleculeType, subgraph.Root.Title)
 	fmt.Printf("   ID: %s\n", subgraph.Root.ID)
 	fmt.Printf("   Steps: %d (%d ready)\n", analysis.TotalSteps, analysis.ReadySteps)
 
@@ -448,13 +448,13 @@ func showMoleculeWithParallel(subgraph *MoleculeSubgraph) {
 
 	vars := extractAllVariables(subgraph)
 	if len(vars) > 0 {
-		fmt.Printf("\n%s Variables:\n", ui.RenderWarn("📝"))
+		fmt.Printf("\n%s Variables:\n", ui.RenderWarnIcon())
 		for _, v := range vars {
 			fmt.Printf("   {{%s}}\n", v)
 		}
 	}
 
-	fmt.Printf("\n%s Structure:\n", ui.RenderPass("🌲"))
+	fmt.Printf("\n%s Structure:\n", ui.RenderInfoIcon())
 	printMoleculeTreeWithParallel(subgraph, analysis, subgraph.Root.ID, 0, true)
 	fmt.Println()
 }

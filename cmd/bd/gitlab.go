@@ -16,6 +16,7 @@ import (
 	"github.com/steveyegge/beads/internal/storage/dolt"
 	"github.com/steveyegge/beads/internal/tracker"
 	"github.com/steveyegge/beads/internal/types"
+	"github.com/steveyegge/beads/internal/ui"
 )
 
 // GitLabConfig holds GitLab connection configuration.
@@ -283,7 +284,7 @@ func runGitLabStatus(cmd *cobra.Command, args []string) error {
 
 	// Validate configuration
 	if err := validateGitLabConfig(config); err != nil {
-		_, _ = fmt.Fprintf(out, "\nStatus: ❌ Not configured\n")
+		_, _ = fmt.Fprintf(out, "\nStatus: %s Not configured\n", ui.RenderFailIcon())
 		_, _ = fmt.Fprintf(out, "Error: %v\n", err)
 		return nil
 	}
