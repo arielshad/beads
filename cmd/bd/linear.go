@@ -185,8 +185,7 @@ func runLinearSync(cmd *cobra.Command, args []string) {
 
 	// Create the sync engine
 	engine := tracker.NewEngine(lt, store, actor)
-	engine.OnMessage = func(msg string) { fmt.Println("  " + msg) }
-	engine.OnWarning = func(msg string) { fmt.Fprintf(os.Stderr, "Warning: %s\n", msg) }
+	configureSyncUI(engine, cmd.OutOrStdout())
 
 	// Set up Linear-specific pull hooks
 	engine.PullHooks = buildLinearPullHooks(ctx)
@@ -237,26 +236,8 @@ func runLinearSync(cmd *cobra.Command, args []string) {
 	// Output results
 	if jsonOutput {
 		outputJSON(result)
-	} else if dryRun {
-		fmt.Println("\n✓ Dry run complete (no changes made)")
 	} else {
-		if result.Stats.Pulled > 0 {
-			fmt.Printf("✓ Pulled %d issues (%d created, %d updated)\n",
-				result.Stats.Pulled, result.Stats.Created, result.Stats.Updated)
-		}
-		if result.Stats.Pushed > 0 {
-			fmt.Printf("✓ Pushed %d issues\n", result.Stats.Pushed)
-		}
-		if result.Stats.Conflicts > 0 {
-			fmt.Printf("→ Resolved %d conflicts\n", result.Stats.Conflicts)
-		}
-		fmt.Println("\n✓ Linear sync complete")
-		if len(result.Warnings) > 0 {
-			fmt.Println("\nWarnings:")
-			for _, w := range result.Warnings {
-				fmt.Printf("  - %s\n", w)
-			}
-		}
+		printSyncSummary(cmd.OutOrStdout(), "Linear", result, dryRun)
 	}
 }
 

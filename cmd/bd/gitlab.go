@@ -362,8 +362,7 @@ func runGitLabSync(cmd *cobra.Command, args []string) error {
 
 	// Create the sync engine
 	engine := tracker.NewEngine(gt, store, actor)
-	engine.OnMessage = func(msg string) { _, _ = fmt.Fprintln(out, "  "+msg) }
-	engine.OnWarning = func(msg string) { _, _ = fmt.Fprintf(os.Stderr, "Warning: %s\n", msg) }
+	configureSyncUI(engine, out)
 
 	// Set up GitLab-specific pull hooks
 	engine.PullHooks = buildGitLabPullHooks(ctx)
@@ -401,18 +400,7 @@ func runGitLabSync(cmd *cobra.Command, args []string) error {
 	}
 
 	// Output results
-	if !gitlabSyncDryRun {
-		if result.Stats.Pulled > 0 {
-			_, _ = fmt.Fprintf(out, "✓ Pulled %d issues (%d created, %d updated)\n",
-				result.Stats.Pulled, result.Stats.Created, result.Stats.Updated)
-		}
-		if result.Stats.Pushed > 0 {
-			_, _ = fmt.Fprintf(out, "✓ Pushed %d issues\n", result.Stats.Pushed)
-		}
-		if result.Stats.Conflicts > 0 {
-			_, _ = fmt.Fprintf(out, "→ Resolved %d conflicts\n", result.Stats.Conflicts)
-		}
-	}
+	printSyncSummary(out, "GitLab", result, gitlabSyncDryRun)
 
 	if gitlabSyncDryRun {
 		_, _ = fmt.Fprintln(out)
