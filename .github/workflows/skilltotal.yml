@@ -1,0 +1,26 @@
+# Added by SkillTotal. It checks the agent add-ons (skills, MCP servers, plugins, hooks, rules)
+# that a pull request adds or changes, and puts the result in this job's summary.
+# The check to require in branch protection is the SkillTotal App's, named "SkillTotal": it covers every
+# pull request, forks included. This job adds the summary.
+# The Action is pinned by commit SHA. Its only network host is the SkillTotal API.
+name: SkillTotal
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  skilltotal:
+    name: SkillTotal Action
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # GitHub's OIDC token proves which repository is asking. There is no secret to add.
+      id-token: write
+    steps:
+      - name: Check add-ons
+        uses: AirSecurity/skilltotal-scan@0304660202386b3a90f7f2371e28033badc76748
+        with:
+          api-url: https://staging.skilltotal.com

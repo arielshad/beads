@@ -1,0 +1,21 @@
+# yaml-language-server: $schema=https://skilltotal.com/schemas/skilltotal.schema.json
+# SkillTotal policy for this repository. Added in the setup pull request.
+# Your organization's policy on SkillTotal still applies: this file can only make it stricter.
+version: 1
+
+# warn reports a blocking add-on as "would fail" and the check passes.
+# block fails the check. The stricter of this file and the repository's mode on SkillTotal
+# applies: block in either one blocks. To go back to warn, set warn here and switch the
+# repository to warn on SkillTotal.
+mode: warn
+
+# Verdicts that fail the check, added to your organization's:
+# fail: [unsafe]
+
+# Verdicts that warn, added to your organization's:
+# warn: [potential_risk]
+
+# Add-ons under these paths aren't checked (examples, fixtures). An add-on your
+# organization's policy blocks is still checked.
+# ignore_paths:
+#   - examples/**
